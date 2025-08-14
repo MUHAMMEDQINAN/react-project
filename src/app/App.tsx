@@ -1,13 +1,9 @@
-
-
-
+import "../shared/styles/global.scss";
 
 function App() {
- 
 
   return (
     <>
-      <div></div>
       
     </>
   );
