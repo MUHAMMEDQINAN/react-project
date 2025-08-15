@@ -1,7 +1,7 @@
 import './textField.scss';
 
 type Props = {
-  type: 'email'|'password';
+  type: 'email'|'password'|'name'|'phone';
   name: string;
   hintText: string;
 };

@@ -1,10 +1,10 @@
-import Login from "../../features/auth/pages/login/Login";
+import { Outlet } from "react-router";
 
 function AuthLayout() {
   return (
     <>
       <div>
-        <Login />
+        <Outlet />
       </div>
     </>
   );

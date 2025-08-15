@@ -1,11 +1,11 @@
+// header sidebar ellam declare cheyyum....
 
-
-function Layout() {
+function Dashboard() {
   return (
     <div>
-      
+      <h1>Home Page</h1>
     </div>
   )
 }
 
-export default Layout
+export default Dashboard
