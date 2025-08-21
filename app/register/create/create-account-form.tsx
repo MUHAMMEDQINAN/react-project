@@ -57,6 +57,7 @@ export default function CreateAccount() {
   const {
     register: registerOTP,
     handleSubmit: handleOTPSubmit,
+
     formState: { errors: otpErrors },
   } = useForm<OTPFormData>({
     resolver: zodResolver(otpSchema),
@@ -101,10 +102,13 @@ export default function CreateAccount() {
 
     setAuthResult({
       type: "success",
-      message: `OTP sent to ${data.mobile}. Use code: ${MOCK_OTP}`,
+      message: `OTP sent to ${
+        data.email || data.mobile
+      }. Use code: ${MOCK_OTP}`,
     });
 
     setCurrentStep("otp");
+
     setIsLoading(false);
   };
 
@@ -319,10 +323,29 @@ export default function CreateAccount() {
             <form onSubmit={handleOTPSubmit(onOTPSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="otp">Enter 6-Digit OTP *</Label>
+                
+                <input
+                  type="text"
+                  name="fakeuser"
+                  autoComplete="username"
+                  style={{ display: "none" }}
+                />
+                <input
+                  type="password"
+                  name="fakepass"
+                  autoComplete="new-password"
+                  style={{ display: "none" }}
+                />{" "}
+                
+                {/* Real OTP field */}
                 <Input
                   id="otp"
+                  type="text"
                   {...registerOTP("otp")}
                   placeholder="123456"
+                  name="verification_token"
+                  inputMode="numeric"
+                  autoComplete="new-password"
                   maxLength={6}
                   className={`text-center text-lg tracking-widest ${
                     otpErrors.otp ? "border-red-500" : ""

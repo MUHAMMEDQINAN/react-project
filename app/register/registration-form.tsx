@@ -229,8 +229,6 @@ export default function RegistrationForm() {
             </p>
             <div className="text-xs text-muted-foreground space-y-1">
               <p>ICP001234 - 123 Main Street, Wellington</p>
-              <p>ICP005678 - 456 Queen Street, Auckland</p>
-              <p>ICP009876 - 789 George Street, Dunedin</p>
             </div>
           </div>
         </CardContent>

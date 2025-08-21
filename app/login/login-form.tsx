@@ -88,16 +88,16 @@ export default function Login() {
                 "Login"
               )}
             </Button>
-            {/* Register Button */}
+
             <div className="text-center mt-4">
               <p className="text-sm text-muted-foreground">
-                Don’t have an account?
-              </p>
-              <p
-                className="mt-2 w-full"
-                onClick={() => router.push("/register")}
-              >
-                Register
+                Don’t have an account?{" "}
+                <span
+                  className="text-primary font-medium cursor-pointer hover:underline hover:text-primary/80 transition-colors"
+                  onClick={() => router.push("/register")}
+                >
+                  Register
+                </span>
               </p>
             </div>
           </form>
