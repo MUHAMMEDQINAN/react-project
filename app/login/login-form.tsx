@@ -33,7 +33,7 @@ export default function Login() {
     localStorage.setItem("authData", JSON.stringify({ identifier }));
 
     // redirect after login
-    router.push("/success");
+    router.push("/");
     setIsLoading(false);
   };
 
