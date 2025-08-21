@@ -137,7 +137,7 @@ export default function CreateAccount() {
     localStorage.setItem("isAuthenticated", "true");
 
     setTimeout(() => {
-      router.push("/success");
+      router.push("/");
     }, 1500);
 
     setIsLoading(false);
@@ -323,7 +323,6 @@ export default function CreateAccount() {
             <form onSubmit={handleOTPSubmit(onOTPSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="otp">Enter 6-Digit OTP *</Label>
-                
                 <input
                   type="text"
                   name="fakeuser"
@@ -336,16 +335,15 @@ export default function CreateAccount() {
                   autoComplete="new-password"
                   style={{ display: "none" }}
                 />{" "}
-                
                 {/* Real OTP field */}
                 <Input
                   id="otp"
                   type="text"
                   {...registerOTP("otp")}
                   placeholder="123456"
-                  name="verification_token"
+                  name="otp"
                   inputMode="numeric"
-                  autoComplete="new-password"
+                  autoComplete="one-time-code"
                   maxLength={6}
                   className={`text-center text-lg tracking-widest ${
                     otpErrors.otp ? "border-red-500" : ""
