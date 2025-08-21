@@ -88,6 +88,18 @@ export default function Login() {
                 "Login"
               )}
             </Button>
+            {/* Register Button */}
+            <div className="text-center mt-4">
+              <p className="text-sm text-muted-foreground">
+                Don’t have an account?
+              </p>
+              <p
+                className="mt-2 w-full"
+                onClick={() => router.push("/register")}
+              >
+                Register
+              </p>
+            </div>
           </form>
         </CardContent>
       </Card>
