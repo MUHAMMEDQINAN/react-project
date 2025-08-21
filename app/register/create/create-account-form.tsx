@@ -7,17 +7,35 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, CheckCircle, XCircle, Shield, Eye, EyeOff } from "lucide-react";
+import {
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Shield,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { authenticationSchema, otpSchema, type AuthenticationFormData, type OTPFormData } from "@/lib/validation";
+import {
+  authenticationSchema,
+  otpSchema,
+  type AuthenticationFormData,
+  type OTPFormData,
+} from "@/lib/validation";
 import { MOCK_OTP } from "@/lib/mock-data";
 
 type AuthStep = "credentials" | "otp";
 
-export default function AuthenticationForm() {
+export default function CreateAccount() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<AuthStep>("credentials");
   const [isLoading, setIsLoading] = useState(false);
@@ -31,17 +49,17 @@ export default function AuthenticationForm() {
     register: registerAuth,
     handleSubmit: handleAuthSubmit,
     formState: { errors: authErrors },
-    watch
+    watch,
   } = useForm<AuthenticationFormData>({
-    resolver: zodResolver(authenticationSchema)
+    resolver: zodResolver(authenticationSchema),
   });
 
   const {
     register: registerOTP,
     handleSubmit: handleOTPSubmit,
-    formState: { errors: otpErrors }
+    formState: { errors: otpErrors },
   } = useForm<OTPFormData>({
-    resolver: zodResolver(otpSchema)
+    resolver: zodResolver(otpSchema),
   });
 
   const password = watch("password");
@@ -76,14 +94,14 @@ export default function AuthenticationForm() {
     setAuthResult(null);
 
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Store auth data and simulate OTP sending
     localStorage.setItem("authData", JSON.stringify(data));
-    
+
     setAuthResult({
       type: "success",
-      message: `OTP sent to ${data.mobile}. Use code: ${MOCK_OTP}`
+      message: `OTP sent to ${data.mobile}. Use code: ${MOCK_OTP}`,
     });
 
     setCurrentStep("otp");
@@ -95,12 +113,12 @@ export default function AuthenticationForm() {
     setAuthResult(null);
 
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (data.otp !== MOCK_OTP) {
       setAuthResult({
         type: "error",
-        message: "Invalid OTP. Please check the code and try again."
+        message: "Invalid OTP. Please check the code and try again.",
       });
       setIsLoading(false);
       return;
@@ -108,7 +126,7 @@ export default function AuthenticationForm() {
 
     setAuthResult({
       type: "success",
-      message: "Authentication successful! Redirecting..."
+      message: "Authentication successful! Redirecting...",
     });
 
     // Store final auth status
@@ -123,10 +141,10 @@ export default function AuthenticationForm() {
 
   const resendOTP = async () => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setAuthResult({
       type: "success",
-      message: `New OTP sent. Use code: ${MOCK_OTP}`
+      message: `New OTP sent. Use code: ${MOCK_OTP}`,
     });
     setIsLoading(false);
   };
@@ -144,18 +162,20 @@ export default function AuthenticationForm() {
             <Shield className="w-6 h-6 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold">
-            {currentStep === "credentials" ? "Authentication" : "Verify OTP"}
+            {currentStep === "credentials" ? "Create Account" : "Verify OTP"}
           </CardTitle>
           <CardDescription>
-            {currentStep === "credentials" 
+            {currentStep === "credentials"
               ? "Enter your credentials to continue"
-              : "Enter the 6-digit code sent to your mobile"
-            }
+              : "Enter the 6-digit code sent to your mobile"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {currentStep === "credentials" ? (
-            <form onSubmit={handleAuthSubmit(onCredentialsSubmit)} className="space-y-4">
+            <form
+              onSubmit={handleAuthSubmit(onCredentialsSubmit)}
+              className="space-y-4"
+            >
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address *</Label>
                 <Input
@@ -166,7 +186,9 @@ export default function AuthenticationForm() {
                   className={authErrors.email ? "border-red-500" : ""}
                 />
                 {authErrors.email && (
-                  <p className="text-sm text-red-600">{authErrors.email.message}</p>
+                  <p className="text-sm text-red-600">
+                    {authErrors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -180,7 +202,9 @@ export default function AuthenticationForm() {
                   className={authErrors.mobile ? "border-red-500" : ""}
                 />
                 {authErrors.mobile && (
-                  <p className="text-sm text-red-600">{authErrors.mobile.message}</p>
+                  <p className="text-sm text-red-600">
+                    {authErrors.mobile.message}
+                  </p>
                 )}
               </div>
 
@@ -192,52 +216,95 @@ export default function AuthenticationForm() {
                     type={showPassword ? "text" : "password"}
                     {...registerAuth("password")}
                     placeholder="Enter a strong password"
-                    className={authErrors.password ? "border-red-500 pr-10" : "pr-10"}
+                    className={
+                      authErrors.password ? "border-red-500 pr-10" : "pr-10"
+                    }
+                  />
+                </div>
+                {password && (
+                  <div className="space-y-2">
+                    <Progress
+                      value={passwordStrength}
+                      className={`h-2 ${getPasswordStrengthColor(
+                        passwordStrength
+                      )}`}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Password strength:{" "}
+                      <span className="font-medium text-foreground">
+                        {getPasswordStrengthLabel(passwordStrength)}
+                      </span>
+                    </p>
+                  </div>
+                )}
+                {authErrors.password && (
+                  <p className="text-sm text-red-600">
+                    {authErrors.password.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    {...registerAuth("confirmPassword")}
+                    placeholder="Re-enter your password"
+                    className={
+                      authErrors.confirmPassword
+                        ? "border-red-500 pr-10"
+                        : "pr-10"
+                    }
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
-                {password && (
-                  <div className="space-y-2">
-                    <Progress 
-                      value={passwordStrength} 
-                      className={`h-2 ${getPasswordStrengthColor(passwordStrength)}`}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Password strength: <span className="font-medium text-foreground">{getPasswordStrengthLabel(passwordStrength)}</span>
-                    </p>
-                  </div>
-                )}
-                {authErrors.password && (
-                  <p className="text-sm text-red-600">{authErrors.password.message}</p>
+                {authErrors.confirmPassword && (
+                  <p className="text-sm text-red-600">
+                    {authErrors.confirmPassword.message}
+                  </p>
                 )}
               </div>
 
               {authResult && (
-                <Alert className={authResult.type === "success" ? "border-green-500" : "border-destructive"}>
+                <Alert
+                  className={
+                    authResult.type === "success"
+                      ? "border-green-500"
+                      : "border-destructive"
+                  }
+                >
                   <div className="flex items-center gap-2">
                     {authResult.type === "success" ? (
                       <CheckCircle className="w-4 h-4 text-green-600" />
                     ) : (
                       <XCircle className="w-4 h-4 text-destructive" />
                     )}
-                    <AlertDescription className={authResult.type === "success" ? "text-green-700" : "text-destructive"}>
+                    <AlertDescription
+                      className={
+                        authResult.type === "success"
+                          ? "text-green-700"
+                          : "text-destructive"
+                      }
+                    >
                       {authResult.message}
                     </AlertDescription>
                   </div>
                 </Alert>
               )}
 
-              <Button 
-                type="submit" 
-                className="w-full"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -257,22 +324,38 @@ export default function AuthenticationForm() {
                   {...registerOTP("otp")}
                   placeholder="123456"
                   maxLength={6}
-                  className={`text-center text-lg tracking-widest ${otpErrors.otp ? "border-red-500" : ""}`}
+                  className={`text-center text-lg tracking-widest ${
+                    otpErrors.otp ? "border-red-500" : ""
+                  }`}
                 />
                 {otpErrors.otp && (
-                  <p className="text-sm text-red-600">{otpErrors.otp.message}</p>
+                  <p className="text-sm text-red-600">
+                    {otpErrors.otp.message}
+                  </p>
                 )}
               </div>
 
               {authResult && (
-                <Alert className={authResult.type === "success" ? "border-green-500" : "border-destructive"}>
+                <Alert
+                  className={
+                    authResult.type === "success"
+                      ? "border-green-500"
+                      : "border-destructive"
+                  }
+                >
                   <div className="flex items-center gap-2">
                     {authResult.type === "success" ? (
                       <CheckCircle className="w-4 h-4 text-green-600" />
                     ) : (
                       <XCircle className="w-4 h-4 text-destructive" />
                     )}
-                    <AlertDescription className={authResult.type === "success" ? "text-green-700" : "text-destructive"}>
+                    <AlertDescription
+                      className={
+                        authResult.type === "success"
+                          ? "text-green-700"
+                          : "text-destructive"
+                      }
+                    >
                       {authResult.message}
                     </AlertDescription>
                   </div>
@@ -280,11 +363,7 @@ export default function AuthenticationForm() {
               )}
 
               <div className="space-y-2">
-                <Button 
-                  type="submit" 
-                  className="w-full"
-                  disabled={isLoading}
-                >
+                <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -295,8 +374,8 @@ export default function AuthenticationForm() {
                   )}
                 </Button>
 
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   variant="outline"
                   className="w-full"
                   onClick={resendOTP}
@@ -305,8 +384,8 @@ export default function AuthenticationForm() {
                   Resend OTP
                 </Button>
 
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   variant="ghost"
                   className="w-full"
                   onClick={() => setCurrentStep("credentials")}
@@ -320,8 +399,15 @@ export default function AuthenticationForm() {
 
           {currentStep === "otp" && (
             <div className="mt-6 p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground font-medium mb-2">Testing Information:</p>
-              <p className="text-xs text-muted-foreground">Use OTP code: <span className="font-mono font-bold text-foreground">123456</span></p>
+              <p className="text-sm text-muted-foreground font-medium mb-2">
+                Testing Information:
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Use OTP code:{" "}
+                <span className="font-mono font-bold text-foreground">
+                  123456
+                </span>
+              </p>
             </div>
           )}
         </CardContent>

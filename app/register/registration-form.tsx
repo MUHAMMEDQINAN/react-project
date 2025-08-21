@@ -7,12 +7,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, CheckCircle, XCircle, Zap } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { registrationSchema, type RegistrationFormData } from "@/lib/validation";
+import {
+  registrationSchema,
+  type RegistrationFormData,
+} from "@/lib/validation";
 import { mockICPData, newZealandRegions } from "@/lib/mock-data";
 
 export default function RegistrationForm() {
@@ -28,9 +43,9 @@ export default function RegistrationForm() {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors }
+    formState: { errors },
   } = useForm<RegistrationFormData>({
-    resolver: zodResolver(registrationSchema)
+    resolver: zodResolver(registrationSchema),
   });
 
   const watchedRegion = watch("region");
@@ -40,30 +55,32 @@ export default function RegistrationForm() {
     setValidationResult(null);
 
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Validate ICP ID against mock data
-    const icpRecord = mockICPData.find(record => record.icpId === data.icpId);
-    
+    const icpRecord = mockICPData.find((record) => record.icpId === data.icpId);
+
     if (!icpRecord) {
       setValidationResult({
         type: "error",
-        message: "ICP ID not found. Please check your ICP ID and try again."
+        message: "ICP ID not found. Please check your ICP ID and try again.",
       });
       setIsLoading(false);
       return;
     }
 
     // Check if address details match
-    const addressMatches = 
-      icpRecord.streetAddress.toLowerCase() === data.streetAddress.toLowerCase() &&
+    const addressMatches =
+      icpRecord.streetAddress.toLowerCase() ===
+        data.streetAddress.toLowerCase() &&
       icpRecord.town.toLowerCase() === data.town.toLowerCase() &&
       icpRecord.region.toLowerCase() === data.region.toLowerCase();
 
     if (!addressMatches) {
       setValidationResult({
         type: "error",
-        message: "Address details don't match our records for this ICP ID. Please verify your information."
+        message:
+          "Address details don't match our records for this ICP ID. Please verify your information.",
       });
       setIsLoading(false);
       return;
@@ -71,15 +88,15 @@ export default function RegistrationForm() {
 
     // Store registration data in localStorage
     localStorage.setItem("registrationData", JSON.stringify(data));
-    
+
     setValidationResult({
       type: "success",
-      message: "Registration successful! Redirecting to authentication..."
+      message: "Registration successful! Redirecting to authentication...",
     });
 
     // Redirect after success message
     setTimeout(() => {
-      router.push("/auth");
+      router.push("/register/create");
     }, 1500);
 
     setIsLoading(false);
@@ -124,7 +141,9 @@ export default function RegistrationForm() {
                 className={errors.streetAddress ? "border-red-500" : ""}
               />
               {errors.streetAddress && (
-                <p className="text-sm text-red-600">{errors.streetAddress.message}</p>
+                <p className="text-sm text-red-600">
+                  {errors.streetAddress.message}
+                </p>
               )}
             </div>
 
@@ -147,7 +166,9 @@ export default function RegistrationForm() {
                 value={watchedRegion || ""}
                 onValueChange={(value) => setValue("region", value)}
               >
-                <SelectTrigger className={errors.region ? "border-red-500" : ""}>
+                <SelectTrigger
+                  className={errors.region ? "border-red-500" : ""}
+                >
                   <SelectValue placeholder="Select your region" />
                 </SelectTrigger>
                 <SelectContent>
@@ -164,25 +185,33 @@ export default function RegistrationForm() {
             </div>
 
             {validationResult && (
-              <Alert className={validationResult.type === "success" ? "border-green-500" : "border-destructive"}>
+              <Alert
+                className={
+                  validationResult.type === "success"
+                    ? "border-green-500"
+                    : "border-destructive"
+                }
+              >
                 <div className="flex items-center gap-2">
                   {validationResult.type === "success" ? (
                     <CheckCircle className="w-4 h-4 text-green-600" />
                   ) : (
                     <XCircle className="w-4 h-4 text-destructive" />
                   )}
-                  <AlertDescription className={validationResult.type === "success" ? "text-green-700" : "text-destructive"}>
+                  <AlertDescription
+                    className={
+                      validationResult.type === "success"
+                        ? "text-green-700"
+                        : "text-destructive"
+                    }
+                  >
                     {validationResult.message}
                   </AlertDescription>
                 </div>
               </Alert>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -195,7 +224,9 @@ export default function RegistrationForm() {
           </form>
 
           <div className="mt-6 p-4 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground font-medium mb-2">Sample ICP IDs for testing:</p>
+            <p className="text-sm text-muted-foreground font-medium mb-2">
+              Sample ICP IDs for testing:
+            </p>
             <div className="text-xs text-muted-foreground space-y-1">
               <p>ICP001234 - 123 Main Street, Wellington</p>
               <p>ICP005678 - 456 Queen Street, Auckland</p>

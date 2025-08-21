@@ -14,19 +14,23 @@ export const registrationSchema = z.object({
     .min(1, "Region is required")
 });
 
-export const authenticationSchema = z.object({
-  email: z.string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  mobile: z.string()
-    .min(1, "Mobile number is required")
-    .regex(/^(\+64|0)[0-9]{8,9}$/, "Please enter a valid New Zealand mobile number"),
-  password: z.string()
-    .min(1, "Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
-           "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
-});
+export const authenticationSchema = z
+  .object({
+    email: z.string().email("Invalid email address"),
+    mobile: z.string().min(8, "Mobile number must be at least 8 digits"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[a-z]/, "Must contain at least one lowercase letter")
+      .regex(/[A-Z]/, "Must contain at least one uppercase letter")
+      .regex(/\d/, "Must contain at least one number")
+      .regex(/[@$!%*?&]/, "Must contain at least one special character"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"], // error goes to confirmPassword
+  });
 
 export const otpSchema = z.object({
   otp: z.string()
