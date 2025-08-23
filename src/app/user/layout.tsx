@@ -1,29 +1,14 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@/components/theme-provider';
+// src/app/user/layout.tsx
+import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: 'Load Management Dashboard',
-  description: 'Register for load management services in New Zealand',
-};
-
-export default function RootLayoutUser({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayoutUser({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
+    <html lang="en" className={inter.className}>
+      <body className="font-body antialiased">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           {children}
         </ThemeProvider>
       </body>
