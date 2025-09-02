@@ -29,6 +29,7 @@ import {
   type RegistrationFormData,
 } from "../../../lib/validation";
 import { mockICPData, newZealandRegions } from "../../../lib/mock-data-user";
+import { useAppMode } from "@/hooks/use-app-mode";
 
 export default function RegistrationForm() {
   const router = useRouter();
@@ -50,56 +51,50 @@ export default function RegistrationForm() {
 
   const watchedRegion = watch("region");
 
+  const { mode } = useAppMode();
+
   const onSubmit = async (data: RegistrationFormData) => {
     setIsLoading(true);
     setValidationResult(null);
 
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Validate ICP ID against mock data
-    const icpRecord = mockICPData.find((record) => record.icpId === data.icpId);
-
-    if (!icpRecord) {
-      setValidationResult({
-        type: "error",
-        message: "ICP ID not found. Please check your ICP ID and try again.",
+    try {
+      const res = await fetch("/user/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data,
+          mode,
+        }),
       });
-      setIsLoading(false);
-      return;
-    }
 
-    // Check if address details match
-    const addressMatches =
-      icpRecord.streetAddress.toLowerCase() ===
-        data.streetAddress.toLowerCase() &&
-      icpRecord.town.toLowerCase() === data.town.toLowerCase() &&
-      icpRecord.region.toLowerCase() === data.region.toLowerCase();
+      if (!res.ok) {
+        setIsLoading(false);
+        setValidationResult({
+          type: "error",
+          message: "Registration failed " + { res },
+        });
+        return;
+      }
 
-    if (!addressMatches) {
+      // Store registration data in localStorage
+      localStorage.setItem("registrationData", JSON.stringify(data));
       setValidationResult({
-        type: "error",
-        message:
-          "Address details don't match our records for this ICP ID. Please verify your information.",
+        type: "success",
+        message: "Registration successful! Redirecting to authentication...",
       });
-      setIsLoading(false);
-      return;
-    }
-
-    // Store registration data in localStorage
-    localStorage.setItem("registrationData", JSON.stringify(data));
-
-    setValidationResult({
-      type: "success",
-      message: "Registration successful! Redirecting to authentication...",
-    });
-
-    // Redirect after success message
-    setTimeout(() => {
+      // ✅ Redirect
       router.push("/user/register/create");
-    }, 1500);
-
-    setIsLoading(false);
+    } catch (err) {
+      console.error("Login error", err);
+      setValidationResult({
+        type: "error",
+        message: "Registration failed " + { err },
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
